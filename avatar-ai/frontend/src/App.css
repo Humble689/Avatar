@@ -1,0 +1,222 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(135deg, #0f0f13 0%, #1a1a23 100%);
+  position: relative;
+}
+
+.avatar-container {
+  flex: 1;
+  position: relative;
+  min-height: 0;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  flex-wrap: wrap;
+}
+
+.state-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  text-transform: capitalize;
+  color: #e5e7eb;
+}
+
+.state-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ef4444;
+}
+
+.state-dot.listening {
+  background: #3b82f6;
+  animation: pulse 1s infinite;
+}
+
+.state-dot.thinking {
+  background: #f59e0b;
+  animation: spin 2s linear infinite;
+}
+
+.state-dot.speaking {
+  background: #10b981;
+  animation: pulse 0.8s infinite;
+}
+
+.state-indicator.state-listening .state-dot {
+  background: #3b82f6;
+  animation: pulse 1s infinite;
+}
+
+.state-indicator.state-thinking .state-dot {
+  background: #f59e0b;
+  animation: spin 2s linear infinite;
+}
+
+.state-indicator.state-speaking .state-dot {
+  background: #10b981;
+  animation: pulse 0.8s infinite;
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  background: #2563eb;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+button:hover:not(:disabled) {
+  background: #1d4ed8;
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  background: #6b7280;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.transcript {
+  position: absolute;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: 600px;
+  background: rgba(0, 0, 0, 0.85);
+  padding: 16px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.6;
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  z-index: 10;
+  max-height: 100px;
+  overflow-y: auto;
+}
+
+.transcript strong {
+  color: #60a5fa;
+  font-weight: 600;
+}
+
+.avatar-selector {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 20;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-width: 90%;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.avatar-btn {
+  padding: 8px 12px;
+  font-size: 12px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(255, 255, 255, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-weight: 500;
+}
+
+.avatar-btn:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+.avatar-btn.active {
+  border-color: #60a5fa;
+  background: rgba(96, 165, 250, 0.2);
+  color: #60a5fa;
+  box-shadow: 0 0 12px rgba(96, 165, 250, 0.4);
+}
+
+.text-input {
+  padding: 10px 16px;
+  font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: all 0.2s;
+  min-width: 200px;
+  font-family: inherit;
+}
+
+.text-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.text-input:focus {
+  outline: none;
+  border-color: #60a5fa;
+  background: rgba(37, 99, 235, 0.1);
+  box-shadow: 0 0 8px rgba(37, 99, 235, 0.3);
+}
+
+.text-input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 768px) {
+  .controls {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+}
