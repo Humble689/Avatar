@@ -83,7 +83,14 @@ async def chat_endpoint(websocket: WebSocket):
                 )
                 print(err)
                 await websocket.send_text(
-                    json.dumps({"type": "error", "message": err})
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "error_type": "invalid_api_key",
+                            "message": err,
+                            "details": "Provided ANTHROPIC_API_KEY is missing or malformed.",
+                        }
+                    )
                 )
                 # skip processing this message
                 continue
