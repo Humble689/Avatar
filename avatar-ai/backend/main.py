@@ -109,7 +109,6 @@ async def chat_endpoint(websocket: WebSocket):
                         await websocket.send_text(
                             json.dumps({"type": "text_chunk", "chunk": text_chunk})
                         )
-
                 # Extract emotion tag from response
                 emotion_match = re.search(r"\[EMOTION:(\w+)\]", full_response)
                 emotion = emotion_match.group(1) if emotion_match else "neutral"
@@ -131,6 +130,44 @@ async def chat_endpoint(websocket: WebSocket):
                 # Add assistant reply to history
                 conversation_history.append(
                     {"role": "assistant", "content": clean_text}
+                )
+
+            except anthropic.APIConnectionError as e:
+                print(f"Connection error: {e}")
+                await websocket.send_text(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "error_type": "api_connection_error",
+                            "message": "Failed to connect to AI service. Please check your network and API key.",
+                            "details": str(e),
+                        }
+                    )
+                )
+            except anthropic.AuthenticationError as e:
+                print(f"Authentication error: {e}")
+                await websocket.send_text(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "error_type": "authentication_error",
+                            "message": "Invalid API key. Please check your ANTHROPIC_API_KEY.",
+                            "details": str(e),
+                        }
+                    )
+                )
+            except Exception as e:
+                # Catch-all for any streaming or parsing errors
+                print(f"Streaming error: {e}")
+                await websocket.send_text(
+                    json.dumps(
+                        {
+                            "type": "error",
+                            "error_type": e.__class__.__name__,
+                            "message": "An unexpected error occurred while generating the response.",
+                            "details": str(e),
+                        }
+                    )
                 )
 
             except anthropic.APIConnectionError as e:
