@@ -14,7 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize Anthropic client
-client = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+API_KEY = os.getenv("ANTHROPIC_API_KEY")
+client = anthropic.Anthropic(api_key=API_KEY)
 
 # Persona prompt - defines the avatar's personality
 AVATAR_SYSTEM_PROMPT = """
@@ -72,6 +73,19 @@ async def chat_endpoint(websocket: WebSocket):
             user_text = message.get("text", "").strip()
 
             if not user_text:
+                continue
+
+            # Quick validation of API key to avoid hanging on invalid creds
+            if not API_KEY or not API_KEY.startswith("sk-ant-"):
+                err = (
+                    "Missing or invalid ANTHROPIC_API_KEY. "
+                    "Please set ANTHROPIC_API_KEY to a valid sk-ant-* key."
+                )
+                print(err)
+                await websocket.send_text(
+                    json.dumps({"type": "error", "message": err})
+                )
+                # skip processing this message
                 continue
 
             print(f"User: {user_text}")
