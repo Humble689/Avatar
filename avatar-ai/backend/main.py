@@ -177,27 +177,6 @@ async def chat_endpoint(websocket: WebSocket):
                     )
                 )
 
-            except anthropic.APIConnectionError as e:
-                print(f"Connection error: {e}")
-                await websocket.send_text(
-                    json.dumps(
-                        {
-                            "type": "error",
-                            "message": "Failed to connect to AI service. Please check your API key.",
-                        }
-                    )
-                )
-            except anthropic.AuthenticationError as e:
-                print(f"Authentication error: {e}")
-                await websocket.send_text(
-                    json.dumps(
-                        {
-                            "type": "error",
-                            "message": "Invalid API key. Please check your ANTHROPIC_API_KEY.",
-                        }
-                    )
-                )
-
     except WebSocketDisconnect:
         print("Client disconnected")
     except Exception as e:

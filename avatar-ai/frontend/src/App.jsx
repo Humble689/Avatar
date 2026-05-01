@@ -46,8 +46,9 @@ export default function App() {
         }
 
         if (data.type === 'error') {
-          console.error('Backend error:', data.message)
-          setResponse(data.message || 'Something went wrong.')
+          console.error('Backend error:', data)
+          const details = data.details ? ` — ${data.details}` : ''
+          setResponse((data.message || 'Something went wrong.') + details)
           setAvatarState('idle')
           setVisemeWeights({})
           return
