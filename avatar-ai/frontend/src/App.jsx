@@ -22,6 +22,7 @@ export default function App() {
   const [response, setResponse] = useState('')
   const [textInput, setTextInput] = useState('')
   const [selectedAvatarId, setSelectedAvatarId] = useState('avatar1')
+  const [error, setError] = useState(null)
   const wsRef = useRef(null)
   const reconnectTimeoutRef = useRef(null)
 
@@ -47,8 +48,11 @@ export default function App() {
 
         if (data.type === 'error') {
           console.error('Backend error:', data)
-          const details = data.details ? ` — ${data.details}` : ''
-          setResponse((data.message || 'Something went wrong.') + details)
+          setError({
+            type: data.error_type || 'unknown',
+            message: data.message || 'Something went wrong.',
+            details: data.details || null
+          })
           setAvatarState('idle')
           setVisemeWeights({})
           return
@@ -77,6 +81,7 @@ export default function App() {
         console.log('WebSocket disconnected')
         setVisemeWeights({})
         setAvatarState('idle')
+        setError({ type: 'connection', message: 'Connection lost. Reconnecting...', details: null })
         // Attempt to reconnect after 2 seconds
         reconnectTimeoutRef.current = setTimeout(connectWS, 2000)
       }
@@ -119,13 +124,14 @@ export default function App() {
   const handleTextSubmit = () => {
     if (textInput.trim()) {
       if (wsRef.current?.readyState !== WebSocket.OPEN) {
-        setResponse('Connection to the backend is not ready yet.')
+        setError({ type: 'connection', message: 'Connection to backend not ready.', details: null })
         setAvatarState('idle')
         return
       }
 
       setTranscript(textInput)
       setResponse('')
+      setError(null)
       setAvatarState('thinking')
       wsRef.current?.send(JSON.stringify({ text: textInput }))
       setTextInput('')
@@ -139,8 +145,33 @@ export default function App() {
     }
   }
 
+  const handleRetry = () => {
+    setError(null)
+    if (wsRef.current?.readyState !== WebSocket.OPEN) {
+      connectWS()
+    }
+  }
+
+  const handleDismissError = () => {
+    setError(null)
+  }
+
   return (
     <div className="app">
+      {error && (
+        <div className={`error-banner error-${error.type}`}>
+          <div className="error-content">
+            <div className="error-message">
+              <strong>⚠ Error:</strong> {error.message}
+              {error.details && <div className="error-details">{error.details}</div>}
+            </div>
+            <div className="error-actions">
+              <button className="error-btn error-retry" onClick={handleRetry}>Retry</button>
+              <button className="error-btn error-dismiss" onClick={handleDismissError}>Dismiss</button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="avatar-container">
         <AvatarScene 
           visemeWeights={visemeWeights} 
