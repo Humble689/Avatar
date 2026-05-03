@@ -166,6 +166,35 @@ Modify `EMOTION_TO_BLEND_SHAPES` in `frontend/src/App.jsx` to adjust which facia
 - Streaming is working as designed - first token typically arrives in <1s
 - Check network latency between frontend and backend
 
+## Testing & Utilities
+
+There is a small WebSocket test client you can use to verify the backend without opening the frontend UI.
+
+Run it from the `backend` folder:
+
+```bash
+cd avatar-ai/backend
+python test_ws.py "Hello from test client"
+```
+
+This script connects to `ws://localhost:8000/ws/chat`, sends a JSON `{ "text": ... }` payload and prints streamed `text_chunk`, `complete`, and `error` messages.
+
+Also check `backend/.env.example` for the expected environment variable name and format. Copy it to `.env` and replace with your real Anthropic key:
+
+```text
+ANTHROPIC_API_KEY=sk-ant-<your-key-here>
+```
+
+## Screenshots
+
+Add a screenshot or GIF to `docs/screenshot.png` and it will appear in the README when you reference it. Example markdown to add at the top of this README:
+
+```md
+![Avatar demo](docs/screenshot.png)
+```
+
+If you don't have an image yet, create `docs/README_ASSETS.md` or place a file at `docs/screenshot.png` when ready.
+
 ## Contributing
 
 Feel free to extend this project! Some ideas:
